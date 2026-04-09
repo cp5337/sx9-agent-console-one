@@ -1,16 +1,24 @@
 export interface ForgeAgent {
   role: 'orchestrator' | 'architect' | 'builder' | 'validator' | string;
   presence: string;
+  surface?: string;
   status?: 'online' | 'offline' | 'idle' | 'active' | 'stalled';
   lastSeen?: string;
   heartbeat?: number;
 }
 
 export interface ForgeNatsSubjects {
-  telemetry: string;
-  presence: string;
-  factory_request: string;
-  factory_response: string;
+  telemetry?: string;
+  presence?: string;
+  factory_request?: string;
+  factory_response?: string;
+  smarttech_health?: string;
+  smarttech_sme?: string;
+  training_xapi?: string;
+  raptor_egg?: string;
+  raptor_net?: string;
+  raptor_vision?: string;
+  [key: string]: string | undefined;
 }
 
 export interface ForgeJetstreamStream {
@@ -20,23 +28,38 @@ export interface ForgeJetstreamStream {
 }
 
 export interface ForgeNats {
-  local: string;
-  ws_local: string;
+  local?: string;
+  primary?: string;
+  deployment?: string;
+  ws_local?: string;
+  ws?: string;
   subjects: ForgeNatsSubjects;
-  jetstream_streams: ForgeJetstreamStream[];
+  jetstream_streams?: ForgeJetstreamStream[];
 }
 
 export interface ForgeVertical {
-  pillar: string;
+  pillar?: string;
   port: number;
+  subdomain?: string;
+  azure_service?: string;
   health?: 'healthy' | 'degraded' | 'unreachable' | 'unknown';
   latencyMs?: number;
 }
 
 export interface ForgePlugin {
+  name?: string;
+  version?: string;
+  description?: string;
+  cloud?: 'azure' | 'gcp' | 'aws' | 'local';
+  tenant?: string;
   agents: Record<string, ForgeAgent>;
   nats: ForgeNats;
   verticals: Record<string, ForgeVertical>;
+  domains?: Record<string, string>;
+  azure_services?: AzureServices;
+  raptor_vision?: RaptorVision;
+  safety_act?: SafetyAct;
+  dev_surfaces?: Record<string, DevSurface>;
 }
 
 export interface ForgeLinearTask {
@@ -103,4 +126,71 @@ export interface ForgeContext {
   natsConnected: boolean;
   forgePath: string | null;
   lastUpdated: string | null;
+}
+
+export interface AzureServiceDef {
+  purpose: string;
+  plan?: string;
+  runtime?: string;
+  api?: string;
+  models?: string[];
+  features?: string[];
+  ports?: string;
+  replaces?: string;
+  tenant?: string;
+  app_registrations?: Record<string, string>;
+  role_mapping?: Record<string, string>;
+  retention?: string;
+  note?: string;
+}
+
+export interface AzureServiceCategory {
+  [service: string]: AzureServiceDef;
+}
+
+export interface AzureServices {
+  compute?: AzureServiceCategory;
+  data?: AzureServiceCategory;
+  ai?: AzureServiceCategory;
+  comms?: AzureServiceCategory;
+  identity?: AzureServiceCategory;
+  delivery?: AzureServiceCategory;
+  monitoring?: AzureServiceCategory;
+  [category: string]: AzureServiceCategory | undefined;
+}
+
+export interface RaptorPhase {
+  description: string;
+  nats_subject: string;
+  azure_service: string;
+}
+
+export interface RaptorThinClient {
+  device: string;
+  deployment: string;
+  fallback: string;
+  network: string;
+}
+
+export interface RaptorVision {
+  phases: {
+    egg?: RaptorPhase;
+    net?: RaptorPhase;
+    vision?: RaptorPhase;
+    [phase: string]: RaptorPhase | undefined;
+  };
+  thin_client?: RaptorThinClient;
+}
+
+export interface SafetyAct {
+  constraint: string;
+  audit_trail?: string;
+  identity?: string;
+  encryption?: string;
+  no_additional_subscriptions?: boolean;
+}
+
+export interface DevSurface {
+  role: string;
+  repos?: string[];
 }

@@ -16,6 +16,13 @@ const STATUS_DOT: Record<string, string> = {
   stalled: 'bg-sx-warning animate-pulse',
 };
 
+const SURFACE_COLOR: Record<string, string> = {
+  bolt:      'text-sx-glow',
+  cursor:    'text-sx-ok',
+  'ai-studio': 'text-sx-warning',
+  ai_studio:   'text-sx-warning',
+};
+
 export function ForgeAgentRoster() {
   const { plugin, state } = useForge();
 
@@ -43,16 +50,24 @@ export function ForgeAgentRoster() {
       {agents.map(([name, agent]) => {
         const roleStyle = ROLE_COLOR[agent.role] || 'text-sx-muted border-sx-border';
         const dotStyle = STATUS_DOT[agent.status || 'idle'] || 'bg-sx-faint';
+        const surfaceColor = agent.surface ? SURFACE_COLOR[agent.surface] || 'text-sx-faint' : null;
         return (
           <div key={name} className="flex items-center justify-between p-2.5 bg-sx-elevated border border-sx-border hover:border-sx-border transition-colors">
-            <div className="flex items-center space-x-2.5">
+            <div className="flex items-center space-x-2.5 min-w-0">
               <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dotStyle}`} />
-              <div>
-                <span className="text-xs text-sx-text font-medium capitalize">{name}</span>
-                <span className={`text-xs ml-2 border px-1 ${roleStyle}`}>{agent.role}</span>
+              <div className="min-w-0">
+                <div className="flex items-center space-x-1.5">
+                  <span className="text-xs text-sx-text font-medium capitalize">{name}</span>
+                  <span className={`text-xs border px-1 flex-shrink-0 ${roleStyle}`}>{agent.role}</span>
+                  {agent.surface && (
+                    <span className={`text-xs flex-shrink-0 ${surfaceColor || 'text-sx-faint'}`}>
+                      @{agent.surface}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="text-xs text-sx-faint font-mono truncate max-w-48 text-right">
+            <div className="text-xs text-sx-faint font-mono truncate max-w-48 text-right flex-shrink-0 ml-3">
               {agent.presence}
             </div>
           </div>

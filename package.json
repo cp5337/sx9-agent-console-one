@@ -1,22 +1,43 @@
 {
   "name": "sx9-agent-console",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
+  "bin": {
+    "sx9-console": "./bin/sx9-console.js"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "server/"
+  ],
+  "keywords": [
+    "agent",
+    "observability",
+    "forge",
+    "nats",
+    "cli",
+    "sx9"
+  ],
   "scripts": {
     "dev": "vite",
+    "dev:server": "node server/index.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.102.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

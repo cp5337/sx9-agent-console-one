@@ -6,6 +6,8 @@ import { KanbanBoard } from './components/KanbanBoard';
 import { MetricsWidget } from './components/MetricsWidget';
 import { WebSocketDebugger } from './components/WebSocketDebugger';
 import { TalonPanel } from './components/talon/TalonPanel';
+import { ForgePanel } from './components/forge/ForgePanel';
+import { ForgeProvider } from './providers/ForgeProvider';
 import { useWebSocket } from './hooks/useWebSocket';
 import { getWebSocketUrl } from './utils/url';
 import {
@@ -31,7 +33,8 @@ import {
   Zap,
   Shield,
   Activity,
-  Network
+  Network,
+  Cpu
 } from 'lucide-react';
 
 function App() {
@@ -41,7 +44,7 @@ function App() {
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [metrics, setMetrics] = useState<SystemMetric[]>(mockMetrics);
   const [activeChannelId, setActiveChannelId] = useState<string>('general');
-  const [activeTab, setActiveTab] = useState<'overview' | 'chat' | 'tasks' | 'metrics' | 'talon'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'chat' | 'tasks' | 'metrics' | 'talon' | 'forge'>('overview');
 
   const { isConnected, sendMessage } = useWebSocket(getWebSocketUrl());
 
@@ -124,14 +127,16 @@ function App() {
   const channelMessages = messages.filter(m => m.channelId === activeChannelId);
 
   const tabs = [
-    { id: 'overview', label: 'Overview',      icon: Command },
-    { id: 'chat',     label: 'Comms',         icon: MessageSquare },
-    { id: 'tasks',    label: 'Operations',    icon: BarChart3 },
-    { id: 'metrics',  label: 'Metrics',       icon: Activity },
-    { id: 'talon',    label: 'Talon',         icon: Network },
+    { id: 'overview', label: 'Overview',   icon: Command },
+    { id: 'chat',     label: 'Comms',      icon: MessageSquare },
+    { id: 'tasks',    label: 'Operations', icon: BarChart3 },
+    { id: 'metrics',  label: 'Metrics',    icon: Activity },
+    { id: 'talon',    label: 'Talon',      icon: Network },
+    { id: 'forge',    label: 'Forge',      icon: Cpu },
   ];
 
   return (
+    <ForgeProvider>
     <div className="min-h-screen bg-sx-root text-sx-text">
       <header className="bg-sx-surface border-b border-sx-border px-6 py-4">
         <div className="flex items-center justify-between">
@@ -287,6 +292,10 @@ function App() {
           <TalonPanel personas={personas} />
         )}
 
+        {activeTab === 'forge' && (
+          <ForgePanel />
+        )}
+
         {activeTab === 'metrics' && (
           <div className="space-y-6">
             <div className="bg-sx-surface border border-sx-border p-6">
@@ -337,6 +346,7 @@ function App() {
 
       <WebSocketDebugger />
     </div>
+    </ForgeProvider>
   );
 }
 

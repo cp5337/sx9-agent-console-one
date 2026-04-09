@@ -48,7 +48,10 @@ function App() {
 
   const { isConnected, sendMessage } = useWebSocket(getWebSocketUrl());
 
+  const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
   useEffect(() => {
+    if (!isDemoMode) return;
     const interval = setInterval(() => {
       setMetrics(prev => prev.map(metric => ({
         ...metric,
@@ -57,7 +60,7 @@ function App() {
       })));
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isDemoMode]);
 
   const handleStartChat = (personaId: string) => {
     const existingChannel = channels.find(
@@ -208,7 +211,12 @@ function App() {
 
             <div className="col-span-12 lg:col-span-6 space-y-6">
               <div className="bg-sx-surface border border-sx-border p-4">
-                <span className="text-xs font-medium text-sx-muted uppercase tracking-wider">System Metrics</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-sx-muted uppercase tracking-wider">System Metrics</span>
+                  {isDemoMode && (
+                    <span className="text-xs text-sx-faint border border-sx-border px-1.5 py-0.5 font-mono">synthetic</span>
+                  )}
+                </div>
                 <div className="mt-4">
                   <MetricsWidget metrics={metrics} />
                 </div>
@@ -299,7 +307,12 @@ function App() {
         {activeTab === 'metrics' && (
           <div className="space-y-6">
             <div className="bg-sx-surface border border-sx-border p-6">
-              <span className="text-xs font-medium text-sx-muted uppercase tracking-wider">Performance</span>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-sx-muted uppercase tracking-wider">Performance</span>
+                {isDemoMode && (
+                  <span className="text-xs text-sx-faint border border-sx-border px-1.5 py-0.5 font-mono">synthetic</span>
+                )}
+              </div>
               <div className="mt-4">
                 <MetricsWidget metrics={metrics} />
               </div>

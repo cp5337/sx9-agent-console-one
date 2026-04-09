@@ -9,7 +9,7 @@ class ApiService {
     try {
       const response = await fetch(`${API_BASE}/health`, {
         method: 'GET',
-        timeout: 5000
+        signal: AbortSignal.timeout(5000),
       });
       return response.ok;
     } catch (error) {
